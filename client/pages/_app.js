@@ -2,8 +2,9 @@ import { WagmiConfig } from 'wagmi';
 import '../styles/global.css';
 import PropTypes from 'prop-types';
 // import { useEffect } from 'react';
+import React from 'react';
+import { SessionProvider } from 'next-auth/react';
 import client from '../lib/wagmi/chain-config';
-// import getWalletInstance from '../lib/arcana/authprovider';
 
 function MyApp({ Component, pageProps }) {
 
@@ -13,9 +14,11 @@ function MyApp({ Component, pageProps }) {
 	// }, [])
 
 	return (
-		<WagmiConfig client={client}>
-			<Component {...pageProps} />
-		</WagmiConfig>
+		<SessionProvider session={pageProps.session}>
+			<WagmiConfig client={client}>
+				<Component {...pageProps} />
+			</WagmiConfig>
+		</SessionProvider>
 	);
 }
 

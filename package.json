@@ -46,5 +46,6 @@
       "npx prettier --write",
       "npx eslint --fix"
     ]
-  }
+  },
+  "dependencies": {}
 }

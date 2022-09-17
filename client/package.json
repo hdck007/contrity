@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@arcana/auth": "^0.1.1",
-    "@arcana/storage": "^0.2.0",
+    "@prisma/client": "^4.3.1",
     "ethers": "^5.7.0",
     "next": "^12.1.0",
     "next-auth": "^4.10.3",
@@ -22,6 +22,7 @@
     "autoprefixer": "^10.4.8",
     "daisyui": "^2.28.0",
     "postcss": "^8.4.16",
+    "prisma": "^4.3.1",
     "tailwindcss": "^3.1.8"
   }
 }

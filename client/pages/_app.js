@@ -2,9 +2,9 @@ import { WagmiConfig } from 'wagmi';
 import '../styles/global.css';
 import PropTypes from 'prop-types';
 // import { useEffect } from 'react';
-import client from '../lib/wagmi/chain-config';
 import React from 'react';
 import { SessionProvider } from 'next-auth/react';
+import client from '../lib/wagmi/chain-config';
 
 function MyApp({ Component, pageProps }) {
 

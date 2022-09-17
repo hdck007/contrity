@@ -12,4 +12,6 @@ datasource db {
 
 model Contributions {
   id       Int      @id @default(autoincrement())
+  tokenId Int @unique
+  prId String
 }

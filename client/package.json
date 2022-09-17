@@ -8,12 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@arcana/auth": "^0.1.1",
-<<<<<<< HEAD
-    "@arcana/storage": "^0.2.0",
-=======
     "@prisma/client": "^4.3.1",
->>>>>>> 99d3d3d6f3c3fb1aef3c3e2211e35333f6a338da
     "ethers": "^5.7.0",
     "next": "^12.1.0",
     "next-auth": "^4.10.3",

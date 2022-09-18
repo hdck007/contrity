@@ -11,16 +11,10 @@ export const authOptions = {
     // ...add more providers here  
   ],
   callbacks: {
-    async jwt(token, user, account, profile, isNewUser) {
-      // Add access_token to the token right after signin
-      // if (account?.accessToken) {
-      //   token.accessToken = account.accessToken;
-      // }
-      console.log(user, account);
+    async jwt(token) {
       return token;
     },
-    async session(session, token) {
-      console.log("session", session, token);
+    async session(session) {
       return session;
     },
   }

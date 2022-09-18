@@ -1,62 +1,45 @@
-import { useConnect, useAccount, useBalance } from 'wagmi';
-import PropTypes from 'prop-types';
+import { useSession, signIn, signOut, getSession } from "next-auth/react"
 
-function Balance({ addressOrName }) {
-	const { data, isError, isLoading } = useBalance({
-		addressOrName,
-	});
+export default function Login() {
+  const { data: session } = useSession()
 
-	if (isLoading) return <div>Fetching balance…</div>;
-	if (isError) return <div>Error fetching balance</div>;
-	return (
-		<div>
-			Balance: {data?.formatted} {data?.symbol}
-		</div>
-	);
+  console.log(session)
+
+  return (
+    <div className="h-screen overflow-hidden flex justify-center items-center">
+      <div className="card w-96 shadow-xl">
+        <div className="card-body">
+          <h1 className="text-center text-2xl bold my-6" >Login with github</h1>
+          {(session) ? (
+            <button
+              type="button"
+                className="btn btn-primary"
+                onClick={() => signOut()}>Sign out</button>
+          )
+            : (
+              <button
+                type="button"
+                  className="btn btn-primary"
+                onClick={() => signIn()}>Sign in</button>
+            )}
+        </div>
+      </div>
+    </div>
+  )
 }
 
-Balance.propTypes = {
-	addressOrName: PropTypes.string.isRequired,
-};
-
-function Account() {
-	const { address, isConnecting, isDisconnected } = useAccount();
-
-	if (isConnecting) return <div>Connecting…</div>;
-	if (isDisconnected) return <div>Disconnected</div>;
-	return (
-		<div>
-			{address}
-			<Balance addressOrName={address} />
-		</div>
-	);
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  const username = session?.token?.token?.token?.profile?.login;
+  if(username){
+    return {
+      redirect: {
+        destination: `/users/${username}`,
+        permanent: false,
+      },
+    }
+  }
+  return {
+    props: {},
+  }
 }
-
-function Profile() {
-	const { connect, connectors, error, isLoading, pendingConnector } =
-		useConnect();
-
-	return (
-		<div>
-			{connectors.map((connector) => (
-				<button
-					type='button'
-					className='btn btn-primary'
-					key={connector.id}
-					onClick={() => connect({ connector })}
-				>
-					{connector.name}
-					{!connector.ready && ' (unsupported)'}
-					{isLoading &&
-						connector.id === pendingConnector?.id &&
-						' (connecting)'}
-				</button>
-			))}
-
-			{error && <div>{error.message}</div>}
-			<Account />
-		</div>
-	);
-}
-
-export default Profile;

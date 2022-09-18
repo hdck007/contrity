@@ -14,7 +14,7 @@ function MyApp({ Component, pageProps }) {
 	// }, [])
 
 	return (
-		<SessionProvider session={pageProps.session}>
+		<SessionProvider session={pageProps.session} refetchInterval={0}>
 			<WagmiConfig client={client}>
 				<Component {...pageProps} />
 			</WagmiConfig>

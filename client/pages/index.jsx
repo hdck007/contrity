@@ -30,7 +30,7 @@ export default function Login() {
 
 export async function getServerSideProps(context) {
   const session = await getSession(context)
-  const username = session?.token?.token?.token?.profile?.login;
+  const username = session?.username;
   if(username){
     return {
       redirect: {

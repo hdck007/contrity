@@ -2,7 +2,7 @@ import { useConnect, useAccount, useBalance } from 'wagmi';
 import PropTypes from 'prop-types';
 import uploadProvider from '../lib/filebase/uploadProvider';
 
-uploadProvider('../public/image.png', 'image/png');
+// uploadProvider('../public/image.png', 'image/png');
 function Balance({ addressOrName }) {
 	const { data, isError, isLoading } = useBalance({
 		addressOrName,

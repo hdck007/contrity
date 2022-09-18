@@ -3,8 +3,6 @@ import { useSession, signIn, signOut, getSession } from "next-auth/react"
 export default function Login() {
   const { data: session } = useSession()
 
-  console.log(session)
-
   return (
     <div className="h-screen overflow-hidden flex justify-center items-center">
       <div className="card w-96 shadow-xl">

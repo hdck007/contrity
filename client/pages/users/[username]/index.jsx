@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { getSession } from 'next-auth/react';
+import { getSession ,signOut} from 'next-auth/react';
 import fetchApi from '../../../lib/github/fetchApi';
 
 const ArrowElement = (
@@ -29,6 +29,7 @@ function Repos({ username, repos }) {
 				<p className='my-20 text-4xl font-semibold'>{username}'s PRs</p>
 				<span className='flex items-center'>
 					<button
+						onClick={() => signOut()}
 						type='button'
 						className='hover:bg-purple-400 btn btn-ghost h-100'
 					>
@@ -71,12 +72,19 @@ function Repos({ username, repos }) {
 export const getServerSideProps = async (context) => {
 	const { username } = context.params;
 	const session = await getSession(context);
+  if(!session?.user){
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false,
+			},
+		}
+	}
 	const token = session?.accessToken;
 	const repos = await fetchApi(
 		`https://api.github.com/users/${username}/repos`,
 		token
 	);
-  console.log(repos)
 	return {
 		props: {
 			username,

@@ -6,23 +6,39 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+// import hardhat console
+import "hardhat/console.sol";
 
-contract CONTRI is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract Contri is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
 
+     mapping(string => uint256) private token;
+
     constructor() ERC721("CONTRI", "CTR") {}
 
     function _baseURI() internal pure override returns (string memory) {
-        return "https://wizard.openzeppelin.com/#erc721";
+        return "https://via.placeholder.com/";
     }
 
-    function safeMint(address to, string memory uri) public {
-        uint256 tokenId = _tokenIdCounter.current();
+    function safeMint(string memory uri, string memory pr) public {
         _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
+        uint256 tokenId = _tokenIdCounter.current();
+        _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, uri);
+        _transfer(msg.sender, address(this), tokenId);
+        token[pr] = tokenId;
+        console.log(token[pr], pr, tokenId, uri);
+    }
+
+    function getTokenId(string memory pr) public view returns (uint256, string memory) {
+        console.log(token[pr], pr);
+        return (token[pr], pr);
+    }
+
+    function claim(uint256 tokenId) public {
+        _transfer(address(this), msg.sender, tokenId);
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId)

@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { getSession } from 'next-auth/react';
-import fetchApi from '../../../lib/github/fetchApi';
+import Link from 'next/link';
+import fetchApi from '../../../../lib/github/fetchApi';
 
 const ArrowElement = (
 	<div className='px-3 h-100 flex card-actions items-center justify-center transition duration-150 ease-out hover:ease-in'>
@@ -21,7 +22,7 @@ const ArrowElement = (
 	</div>
 );
 
-function PRs({ username, prs }) {
+function PRs({ username, prs, repo }) {
 	return (
 		<main className='mx-20 my-4'>
 			<span className='w-fit p-3 flex gap-2 cursor-pointer rounded-xl hover:bg-purple-400'>
@@ -43,25 +44,27 @@ function PRs({ username, prs }) {
 			</span>
 			<p className='my-20 text-4xl font-semibold'>{username}'s PRs</p>
 			{prs.map((pr) => (
-				<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
-					<div className='flex card-body flex-row'>
-						<h2 className='card-title'>{pr.title}</h2>
-						{pr.state === 'open' ? (
-							<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-								{pr.state}
-							</div>
-						) : pr.merged_at ? (
-							<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-								merged
-							</div>
-						) : (
-							<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-								{pr.state}
-							</div>
-						)}
+				<Link href={`/users/${username}/${repo}/${pr.number}`} >
+					<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
+						<div className='flex card-body flex-row'>
+							<h2 className='card-title'>{pr.title}</h2>
+							{pr.state === 'open' ? (
+								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+									{pr.state}
+								</div>
+							) : pr.merged_at ? (
+								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+									merged
+								</div>
+							) : (
+								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+									{pr.state}
+								</div>
+							)}
+						</div>
+						{ArrowElement}
 					</div>
-					{ArrowElement}
-				</div>
+				</Link>
 			))}
 		</main>
 	);
@@ -69,16 +72,23 @@ function PRs({ username, prs }) {
 
 export const getServerSideProps = async (context) => {
 	const { params } = context;
-  console.log(params)
 	const session = await getSession(context);
+	if(!session?.user){
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false,
+			},
+		}
+	}
 	const token = session?.accessToken;
 	const prs = await fetchApi(
-		`https://api.github.com/repos/${params.username}/${params.pr}/pulls?state=all`,
+		`https://api.github.com/repos/${params.username}/${params.repo}/pulls?state=all`,
 		token
 	);
 	return {
 		props: {
-			username: params.username,
+			...params,
 			prs,
 		},
 	};

@@ -1,4 +1,3 @@
-import { Head } from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 import { getSession } from 'next-auth/react';
@@ -53,17 +52,17 @@ function Repos({ username, repos }) {
 			</div>
 
 			{repos.map((repo) => (
-        <>
-				<Link href={`/users/${username}/${repo.name}`} type='button'>
-					<div className='my-3 card shadow-2xl lg:card-side bg-base-100 w-full cursor-pointer hover:bg-purple-400 hover:text-white'>
-						<div className='card-body flex flex-row justify-between items-center'>
-							<h2 className='card-title'>{repo.name}</h2>
-							{ArrowElement}
+				<>
+					<Link href={`/users/${username}/${repo.name}`} type='button'>
+						<div className='my-3 card shadow-2xl lg:card-side bg-base-100 w-full cursor-pointer hover:bg-purple-400 hover:text-white'>
+							<div className='card-body flex flex-row justify-between items-center'>
+								<h2 className='card-title'>{repo.name}</h2>
+								{ArrowElement}
+							</div>
 						</div>
-					</div>
-				</Link>
-        <br />
-        </>
+					</Link>
+					<br />
+				</>
 			))}
 		</main>
 	);
@@ -77,6 +76,7 @@ export const getServerSideProps = async (context) => {
 		`https://api.github.com/users/${username}/repos`,
 		token
 	);
+  console.log(repos)
 	return {
 		props: {
 			username,

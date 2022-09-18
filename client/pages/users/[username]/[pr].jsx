@@ -69,10 +69,11 @@ function PRs({ username, prs }) {
 
 export const getServerSideProps = async (context) => {
 	const { params } = context;
+  console.log(params)
 	const session = await getSession(context);
 	const token = session?.accessToken;
-  const prs = await fetchApi(
-		`https://api.github.com/repos/${params.username}/${params.pr[0]}/pulls?state=all`,
+	const prs = await fetchApi(
+		`https://api.github.com/repos/${params.username}/${params.pr}/pulls?state=all`,
 		token
 	);
 	return {

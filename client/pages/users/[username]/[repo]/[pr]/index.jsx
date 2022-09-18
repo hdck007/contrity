@@ -1,89 +1,26 @@
 import { getSession } from 'next-auth/react';
-import {
-	useConnect,
-	useContractRead,
-	useAccount,
-	useContractWrite,
-	usePrepareContractWrite,
-} from 'wagmi';
+import { useContractRead } from 'wagmi';
 import { useEffect, useState } from 'react';
 import fetchApi from '../../../../../lib/github/fetchApi';
 import Profile from '../../../../../src/components/contract';
-import contractAbi from '../../../../../artifacts/contracts/Contri.sol/Contri.json';
+import { abi, contractaddress } from '../../../../../src/constants';
+import MintNFT from '../../../../../src/components/mintnft';
+import ClaimNFT from '../../../../../src/components/claimnft';
 
-const contractAdress = '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1';
-
-function MintNFT({ pr }) {
-	const { config } = usePrepareContractWrite({
-		args: ['150', pr],
-		addressOrName: contractAdress,
-		contractInterface: contractAbi.abi,
-		functionName: 'safeMint',
-	});
-	const { isDisconnected } = useAccount();
-	const { data, isLoading, isSuccess, write } = useContractWrite(config);
-
-	console.log(data);
-
-	return (
-		<div>
-			<button
-				className='btn btn-primary mx-5 hover:bg-purple-400'
-				type='button'
-				disabled={!write || isDisconnected}
-				onClick={() => write?.('150', pr)}
-			>
-				Mint
-			</button>
-			{isLoading && <div>Check Wallet</div>}
-			{/* {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
-		</div>
-	);
-}
-
-function ClaimNFT({ tokenId }) {
-	const { config } = usePrepareContractWrite({
-		args: [tokenId],
-		addressOrName: contractAdress,
-		contractInterface: contractAbi.abi,
-		functionName: 'claim',
-	});
-	const { isDisconnected } = useAccount();
-	const { isLoading, write } = useContractWrite(config);
-
-	return (
-		<div>
-			<button
-				className='btn btn-secondary mx-5 hover:bg-purple-400'
-				type='button'
-				disabled={!write || isDisconnected}
-				onClick={() => write?.(tokenId)}
-			>
-				Claim Nft
-			</button>
-			{isLoading && <div>Check Wallet</div>}
-			{/* {isSuccess && <div>Transaction: {JSON.stringify(data)}</div>} */}
-		</div>
-	);
-}
-
-function PR({ username, repo, pr_no, pr_info, isOwner, shouldClaim }) {
+function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 	const [tokenId, setTokenId] = useState(null);
 	const { refetch } = useContractRead({
-		args: [String(pr_info.id)],
-		addressOrName: contractAdress,
-		contractInterface: contractAbi.abi,
+		args: [String(prInfo.id)],
+		addressOrName: contractaddress,
+		contractInterface: abi,
 		functionName: 'getTokenId',
 	});
 
 	useEffect(() => {
-		refetch(String(pr_info.id)).then((data) => {
-			console.log(data);
+		refetch(String(prInfo.id)).then((data) => {
 			setTokenId(parseInt(data.data[0]._hex, 16));
 		});
 	}, []);
-
-	console.log({ tokenId });
 
 	return (
 		<main className='mx-20 my-4'>
@@ -109,20 +46,25 @@ function PR({ username, repo, pr_no, pr_info, isOwner, shouldClaim }) {
 			</span>
 			<span className='flex justify-between items-center'>
 				<p className='my-20 text-4xl font-semibold'>
-					{pr_info.title}
-					<span className='mx-10 font-light underline'>#{pr_no}</span>
+					{prInfo.title}
+					<span className='mx-10 font-light underline'>#{prNo}</span>
 				</p>
 				<div className='w-100 flex justify-end'>
-					{isOwner && <MintNFT pr={String(pr_info.id)} />}
-					{shouldClaim && !!tokenId && (
-						<ClaimNFT tokenId={tokenId} />
+					{isOwner && prInfo.merged && (
+						<MintNFT
+							username={username}
+							repo={repo}
+							prNo={prNo}
+							pr={String(prInfo.id)}
+						/>
 					)}
+					{shouldClaim && !!tokenId && <ClaimNFT tokenId={tokenId} />}
 				</div>
 			</span>
 
 			<p className='py-5 text-4xl font-semibold'>
 				We from Contrity, Appreciates you for Contribution at Repository{' '}
-				{pr_info.head.repo.full_name}.
+				{prInfo.head.repo.full_name}.
 			</p>
 			<p className='py-5 text-4xl font-semibold'>
 				And, For your these helpful contributions towards Open-source Community,
@@ -133,7 +75,7 @@ function PR({ username, repo, pr_no, pr_info, isOwner, shouldClaim }) {
 }
 
 export const getServerSideProps = async (context) => {
-	const pr_no = context.params.pr;
+	const prNo = context.params.pr;
 	const { repo } = context.params;
 	const { username } = context.params;
 	const session = await getSession(context);
@@ -147,18 +89,18 @@ export const getServerSideProps = async (context) => {
 		};
 	}
 	const token = session?.accessToken;
-	const pr_info = await fetchApi(
-		`https://api.github.com/repos/${username}/${repo}/pulls/${pr_no}`,
+	const prInfo = await fetchApi(
+		`https://api.github.com/repos/${username}/${repo}/pulls/${prNo}`,
 		token
 	);
 	return {
 		props: {
 			username,
 			repo,
-			pr_no,
-			pr_info,
+			prNo,
+			prInfo,
 			isOwner: currentUser === username,
-			shouldClaim: pr_info.merged && pr_info.merged_by.login === currentUser,
+			shouldClaim: prInfo.merged && prInfo.merged_by.login === currentUser,
 		},
 	};
 };

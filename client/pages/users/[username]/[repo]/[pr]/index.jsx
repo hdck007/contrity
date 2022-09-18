@@ -34,7 +34,7 @@ function NftImage({ tokenId }) {
 		});
 	}, []);
 
-	return imageUrl ? <img alt='the nft' src={imageUrl} /> : null;
+	return imageUrl ? <img alt='the nft' src={imageUrl} /> : <h3 className='text-xl'>The nft preview is loading here......</h3>;
 }
 
 function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {

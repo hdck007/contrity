@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { getSession ,signOut} from 'next-auth/react';
+import { getSession, signOut } from 'next-auth/react';
 import fetchApi from '../../../lib/github/fetchApi';
 
 const ArrowElement = (
@@ -22,12 +22,22 @@ const ArrowElement = (
 	</div>
 );
 
-function Repos({ username, repos }) {
+function Repos({ username, repos, currentuser }) {
 	return (
 		<main className='mx-20 my-4'>
 			<div className='flex flex-row justify-between'>
 				<p className='my-20 text-4xl font-semibold'>{`${username}'s`} Repos</p>
 				<span className='flex items-center'>
+					{currentuser === username && (
+						<Link href={`/users/${username}/recent`}>
+							<a
+								href={`/users/${username}/recent`}
+								className='hover:bg-purple-400 btn btn-ghost h-100'
+							>
+								My prs
+							</a>
+						</Link>
+					)}
 					<button
 						onClick={() => signOut()}
 						type='button'
@@ -72,21 +82,23 @@ function Repos({ username, repos }) {
 export const getServerSideProps = async (context) => {
 	const { username } = context.params;
 	const session = await getSession(context);
-  if(!session?.user){
+	if (!session?.user) {
 		return {
 			redirect: {
 				destination: '/',
 				permanent: false,
 			},
-		}
+		};
 	}
 	const token = session?.accessToken;
+	const currentuser = session?.username;
 	const repos = await fetchApi(
 		`https://api.github.com/users/${username}/repos`,
 		token
 	);
 	return {
 		props: {
+			currentuser,
 			username,
 			repos,
 		},

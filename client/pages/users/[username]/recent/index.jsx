@@ -47,29 +47,46 @@ function PRs({ username, prs, repo }) {
 				</svg>
 				<p className='text-white'>Back</p>
 			</span>
-			<p className='my-20 text-4xl font-semibold'>{repo} PRs</p>
+			<p className='my-20 text-4xl font-semibold'>{username}'s PRs</p>
 			{prs.map((pr) => (
-				<Link href={`/users/${username}/${repo}/${pr.number}`}>
-					<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
-						<div className='flex card-body flex-row'>
-							<h2 className='card-title'>{pr.title}</h2>
-							{pr.state === 'open' ? (
-								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-									{pr.state}
+				<>
+					<Link
+						href={`/users/${username}/${
+							pr.repository_url.split('/')[
+								pr.repository_url.split('/').length - 1
+							]
+						}/${pr.number}`}
+					>
+						<a
+							href={`/users/${username}/${
+								pr.repository_url.split('/')[
+									pr.repository_url.split('/').length - 1
+								]
+							}/${pr.number}`}
+						>
+							<div className='my-3 card flex flex-row justify-center items-center shadow-xl border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
+								<div className='flex card-body flex-row'>
+									<h2 className='card-title'>{pr.title}</h2>
+									{pr.state === 'open' ? (
+										<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+											{pr.state}
+										</div>
+									) : pr.merged_at ? (
+										<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+											merged
+										</div>
+									) : (
+										<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+											{pr.state}
+										</div>
+									)}
 								</div>
-							) : pr.merged_at ? (
-								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-									merged
-								</div>
-							) : (
-								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-									{pr.state}
-								</div>
-							)}
-						</div>
-						{ArrowElement}
-					</div>
-				</Link>
+								{ArrowElement}
+							</div>
+						</a>
+					</Link>
+					<br />
+				</>
 			))}
 		</main>
 	);
@@ -86,15 +103,16 @@ export const getServerSideProps = async (context) => {
 			},
 		};
 	}
+
 	const token = session?.accessToken;
 	const prs = await fetchApi(
-		`https://api.github.com/repos/${params.username}/${params.repo}/pulls?state=all`,
+		`https://api.github.com/search/issues?q=author%3A${params.username}+type%3Apr`,
 		token
 	);
 	return {
 		props: {
 			...params,
-			prs,
+			prs: prs.items,
 		},
 	};
 };

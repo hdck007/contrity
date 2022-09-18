@@ -100,9 +100,7 @@ function CanvasWrapper({
 
 	const { width } = widthObj[config.size];
 	const { height } = widthObj[config.size];
-
-	console.log(githubDetails);
-
+	
 	const image = new window.Image();
 	const ownerImage = new window.Image();
 	if (githubDetails) {

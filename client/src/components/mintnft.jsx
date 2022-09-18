@@ -10,21 +10,21 @@ const CanvasWrapper = dynamic(() => import('./canvaswrapper'), {
 
 export default function MintNFT({ pr, prNo, repo, username }) {
 	const [modalIsOpen, setIsOpen] = useState(false);
-	const { config } = usePrepareContractWrite({
-		args: ['150', pr],
+	const { isDisconnected } = useAccount();
+	const { isLoading, write } = useContractWrite({
+		mode: 'recklesslyUnprepared',
+		args: ["", pr],
 		addressOrName: contractaddress,
 		contractInterface: abi,
 		functionName: 'safeMint',
 	});
-	const { isDisconnected } = useAccount();
-	const { isLoading, write } = useContractWrite(config);
 
 	return (
 		<div>
 			<button
 				className='btn btn-primary mx-5 hover:bg-purple-400'
 				type='button'
-				disabled={!write || isDisconnected}
+				disabled={isDisconnected}
 				onClick={() => setIsOpen(true)}
 			>
 				Mint
@@ -37,14 +37,14 @@ export default function MintNFT({ pr, prNo, repo, username }) {
 			>
 				<div className='display flex justify-center items-center w-full h-full'>
 					<CanvasWrapper
-            write={write}
-            isDisconnected={isDisconnected}
-            pr={pr}
-            prNumber={prNo}
-            repo={repo}
-            username={username}
-            setIsOpen={setIsOpen}
-          />
+						write={write}
+						isDisconnected={isDisconnected}
+						pr={pr}
+						prNumber={prNo}
+						repo={repo}
+						username={username}
+						setIsOpen={setIsOpen}
+					/>
 				</div>
 			</Modal>
 		</div>

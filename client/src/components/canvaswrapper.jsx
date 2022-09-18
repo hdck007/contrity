@@ -45,17 +45,33 @@ function CanvasWrapper({
 			});
 	}, []);
 
-	function downloadURI(uri, name) {
-		const link = document.createElement('a');
-		link.download = name;
-		link.href = uri;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
+	function dataURLtoBlob(dataurl) {
+		const arr = dataurl.split(',');
+		const mime = arr[0].match(/:(.*?);/)[1];
+		const bstr = atob(arr[1]);
+		let n = bstr.length;
+		const u8arr = new Uint8Array(n);
+		while (n--) {
+			u8arr[n] = bstr.charCodeAt(n);
+		}
+		return new Blob([u8arr], { type: mime });
 	}
 
-	const handleExport = () => {
-		downloadURI(stageRef.current.content.firstChild.toDataURL(), 'test.png');
+	const handleExport = async () => {
+		const blob = dataURLtoBlob(stageRef.current.content.firstChild.toDataURL());
+		const formData = new FormData();
+		formData.append('file', blob);
+		const response = await fetch('https://api.nft.storage/upload', {
+			method: 'POST',
+			body: formData,
+			headers: {
+				Authorization:
+					'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDNGMDRBMDUyZjcyMzhDRjkzNkIwYTY4ZkUyZDYwZTZFNGNhRDdENUUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzOTQwOTMwOTAwOSwibmFtZSI6Im15bmFtZSJ9.QWRhy2ePwIkyDPyFBKhFAmFgAQJ4HmHCVbiUu9Q-sHc',
+			},
+		}).then((data) => data.json());
+		write({
+      recklesslySetUnpreparedArgs: [`https://${response.value.cid}.ipfs.nftstorage.link/blob`, pr],
+    });
 	};
 
 	const { width } = widthObj[config.size];
@@ -77,10 +93,8 @@ function CanvasWrapper({
 	image.crossOrigin = '';
 	ownerImage.crossOrigin = '';
 
-	const handleMint = () => {
-		// const imageUrl = '';
-		// write(imageUrl, pr);
-		handleExport();
+	const handleMint = async () => {
+		await handleExport();
 		setIsOpen(false);
 	};
 

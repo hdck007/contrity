@@ -8,8 +8,8 @@ export default function ClaimNFT({ tokenId }) {
 		contractInterface: abi,
 		functionName: 'claim',
 	});
-	const { isDisconnected } = useAccount();
 	const { isLoading, write } = useContractWrite(config);
+	const { isDisconnected } = useAccount();
 
 	return (
 		<div>

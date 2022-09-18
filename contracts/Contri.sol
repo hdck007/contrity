@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-// import hardhat console
-import "hardhat/console.sol";
 
 contract Contri is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
@@ -18,10 +16,6 @@ contract Contri is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
     constructor() ERC721("CONTRI", "CTR") {}
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://via.placeholder.com/";
-    }
-
     function safeMint(string memory uri, string memory pr) public {
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
@@ -29,11 +23,9 @@ contract Contri is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, uri);
         _transfer(msg.sender, address(this), tokenId);
         token[pr] = tokenId;
-        console.log(token[pr], pr, tokenId, uri);
     }
 
     function getTokenId(string memory pr) public view returns (uint256, string memory) {
-        console.log(token[pr], pr);
         return (token[pr], pr);
     }
 

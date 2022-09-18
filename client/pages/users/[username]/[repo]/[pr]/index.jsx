@@ -1,11 +1,43 @@
 import { getSession } from 'next-auth/react';
 import { useContractRead } from 'wagmi';
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import fetchApi from '../../../../../lib/github/fetchApi';
 import Profile from '../../../../../src/components/contract';
 import { abi, contractaddress } from '../../../../../src/constants';
-import MintNFT from '../../../../../src/components/mintnft';
-import ClaimNFT from '../../../../../src/components/claimnft';
+
+const MintNFT = dynamic(() => import('../../../../../src/components/mintnft'), {
+	ssr: false,
+});
+const ClaimNFT = dynamic(
+	() => import('../../../../../src/components/claimnft'),
+	{
+		ssr: false,
+	}
+);
+
+function NftImage({ tokenId }) {
+	const [imageUrl, setImageUrl] = useState(null);
+	const { refetch } = useContractRead({
+		args: [tokenId],
+		addressOrName: contractaddress,
+		contractInterface: abi,
+		functionName: 'tokenURI',
+	});
+
+	useEffect(() => {
+		refetch(tokenId).then((data) => {
+			console.log("the image", data);
+			if (data?.data) {
+				setImageUrl(data.data);
+			}
+		});
+	}, []);
+
+	console.log(imageUrl);
+
+	return imageUrl ? <img alt='the nft' src={imageUrl} /> : null;
+}
 
 function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 	const [tokenId, setTokenId] = useState(null);
@@ -18,7 +50,9 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 
 	useEffect(() => {
 		refetch(String(prInfo.id)).then((data) => {
-			setTokenId(parseInt(data.data[0]._hex, 16));
+			if (data?.data) {
+				setTokenId(parseInt(data.data[0]._hex, 16));
+			}
 		});
 	}, []);
 
@@ -61,15 +95,16 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 					{shouldClaim && !!tokenId && <ClaimNFT tokenId={tokenId} />}
 				</div>
 			</span>
-
 			<p className='py-5 text-4xl font-semibold'>
-				We from Contrity, Appreciates you for Contribution at Repository{' '}
+				We appreciate you for contribution at repository{' '}
 				{prInfo.head.repo.full_name}.
 			</p>
 			<p className='py-5 text-4xl font-semibold'>
-				And, For your these helpful contributions towards Open-source Community,
-				We have made a Customised NFT relating your Pull Request.
+				And, for your helpful contributions towards the community, We have made
+				a customised NFT relating your pull request below. if you are the
+				contributor you can claim it.
 			</p>
+			{!!tokenId && <NftImage tokenId={tokenId} />}
 		</main>
 	);
 }

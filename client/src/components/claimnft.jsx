@@ -1,7 +1,15 @@
-import { usePrepareContractWrite, useAccount, useContractWrite } from 'wagmi';
+import {
+	usePrepareContractWrite,
+	useAccount,
+	useContractWrite,
+	useContractRead,
+} from 'wagmi';
+import { useEffect, useState } from 'react';
 import { abi, contractaddress } from '../constants';
 
 export default function ClaimNFT({ tokenId }) {
+	const { address } = useAccount();
+	const [unrendered, setUnrendered] = useState(true);
 	const { config } = usePrepareContractWrite({
 		args: [tokenId],
 		addressOrName: contractaddress,
@@ -10,11 +18,29 @@ export default function ClaimNFT({ tokenId }) {
 	});
 	const { isLoading, write } = useContractWrite(config);
 	const { isDisconnected } = useAccount();
+	const { refetch } = useContractRead({
+		args: [tokenId],
+		addressOrName: contractaddress,
+		contractInterface: abi,
+		functionName: 'ownerOf',
+	});
+
+	useEffect(() => {
+		refetch().then((data) => {
+			if (data?.data) {
+				setUnrendered(data.data === address);
+			}
+		});
+	}, [refetch]);
+
+	if(unrendered){
+		return null;
+	}
 
 	return (
 		<div>
 			<button
-				className='btn btn-secondary mx-5 hover:bg-purple-400'
+				className='btn btn-success ml-5 hover:bg-purple-400'
 				type='button'
 				disabled={!write || isDisconnected}
 				onClick={() => write?.(tokenId)}

@@ -2,6 +2,7 @@ import { getSession } from 'next-auth/react';
 import { useContractRead } from 'wagmi';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import fetchApi from '../../../../../lib/github/fetchApi';
 import Profile from '../../../../../src/components/contract';
 import { abi, contractaddress } from '../../../../../src/constants';
@@ -27,19 +28,17 @@ function NftImage({ tokenId }) {
 
 	useEffect(() => {
 		refetch(tokenId).then((data) => {
-			console.log("the image", data);
 			if (data?.data) {
 				setImageUrl(data.data);
 			}
 		});
 	}, []);
 
-	console.log(imageUrl);
-
 	return imageUrl ? <img alt='the nft' src={imageUrl} /> : null;
 }
 
 function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
+	const router = useRouter();
 	const [tokenId, setTokenId] = useState(null);
 	const { refetch } = useContractRead({
 		args: [String(prInfo.id)],
@@ -61,14 +60,17 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 			<div className='absolute right-10 bottom-10'>
 				<Profile />
 			</div>
-			<span className='w-fit p-3 flex gap-2 cursor-pointer rounded-xl hover:bg-purple-400'>
+			<span
+				onClick={() => router.back()}
+				className='w-fit p-3 flex gap-2 cursor-pointer rounded-xl hover:bg-purple-400'
+			>
 				<svg
 					xmlns='http://www.w3.org/2000/svg'
 					fill='none'
 					viewBox='0 0 24 24'
 					strokeWidth='1.5'
 					stroke='currentColor'
-					className='w-6 h-6'
+					className='w-6 h-6 text-white'
 				>
 					<path
 						strokeLinecap='round'
@@ -76,7 +78,7 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 						d='M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18'
 					/>
 				</svg>
-				<p>Back</p>
+				<p className='text-white'>Back</p>
 			</span>
 			<span className='flex justify-between items-center'>
 				<p className='my-20 text-4xl font-semibold'>
@@ -84,7 +86,7 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 					<span className='mx-10 font-light underline'>#{prNo}</span>
 				</p>
 				<div className='w-100 flex justify-end'>
-					{isOwner && prInfo.merged && (
+					{isOwner && tokenId!==null && !tokenId && (
 						<MintNFT
 							username={username}
 							repo={repo}
@@ -128,6 +130,7 @@ export const getServerSideProps = async (context) => {
 		`https://api.github.com/repos/${username}/${repo}/pulls/${prNo}`,
 		token
 	);
+
 	return {
 		props: {
 			username,
@@ -135,7 +138,7 @@ export const getServerSideProps = async (context) => {
 			prNo,
 			prInfo,
 			isOwner: currentUser === username,
-			shouldClaim: prInfo.merged && prInfo.merged_by.login === currentUser,
+			shouldClaim: prInfo.merged && prInfo.user.login === currentUser,
 		},
 	};
 };

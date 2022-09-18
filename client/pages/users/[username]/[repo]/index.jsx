@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import fetchApi from '../../../../lib/github/fetchApi';
 
 const ArrowElement = (
@@ -23,16 +24,20 @@ const ArrowElement = (
 );
 
 function PRs({ username, prs, repo }) {
+	const router = useRouter();
 	return (
 		<main className='mx-20 my-4'>
-			<span className='w-fit p-3 flex gap-2 cursor-pointer rounded-xl hover:bg-purple-400'>
+			<span
+				onClick={() => router.back()}
+				className='w-fit p-3 flex gap-2 cursor-pointer rounded-xl hover:bg-purple-400'
+			>
 				<svg
 					xmlns='http://www.w3.org/2000/svg'
 					fill='none'
 					viewBox='0 0 24 24'
 					strokeWidth='1.5'
 					stroke='currentColor'
-					className='w-6 h-6'
+					className='w-6 h-6 text-white'
 				>
 					<path
 						strokeLinecap='round'
@@ -40,11 +45,11 @@ function PRs({ username, prs, repo }) {
 						d='M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18'
 					/>
 				</svg>
-				<p>Back</p>
+				<p className='text-white' >Back</p>
 			</span>
 			<p className='my-20 text-4xl font-semibold'>{username}'s PRs</p>
 			{prs.map((pr) => (
-				<Link href={`/users/${username}/${repo}/${pr.number}`} >
+				<Link href={`/users/${username}/${repo}/${pr.number}`}>
 					<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
 						<div className='flex card-body flex-row'>
 							<h2 className='card-title'>{pr.title}</h2>
@@ -73,13 +78,13 @@ function PRs({ username, prs, repo }) {
 export const getServerSideProps = async (context) => {
 	const { params } = context;
 	const session = await getSession(context);
-	if(!session?.user){
+	if (!session?.user) {
 		return {
 			redirect: {
 				destination: '/',
 				permanent: false,
 			},
-		}
+		};
 	}
 	const token = session?.accessToken;
 	const prs = await fetchApi(

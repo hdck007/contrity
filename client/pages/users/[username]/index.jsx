@@ -26,7 +26,7 @@ function Repos({ username, repos }) {
 	return (
 		<main className='mx-20 my-4'>
 			<div className='flex flex-row justify-between'>
-				<p className='my-20 text-4xl font-semibold'>{username}'s PRs</p>
+				<p className='my-20 text-4xl font-semibold'>{username}'s Repos</p>
 				<span className='flex items-center'>
 					<button
 						onClick={() => signOut()}
@@ -55,7 +55,7 @@ function Repos({ username, repos }) {
 			{repos.map((repo) => (
 				<>
 					<Link href={`/users/${username}/${repo.name}`} type='button'>
-						<div className='my-3 card shadow-2xl lg:card-side bg-base-100 w-full cursor-pointer hover:bg-purple-400 hover:text-white'>
+						<div className='my-3 card shadow-2xl border-2 lg:card-side bg-base-100 w-full cursor-pointer hover:bg-purple-400 hover:text-white'>
 							<div className='card-body flex flex-row justify-between items-center'>
 								<h2 className='card-title'>{repo.name}</h2>
 								{ArrowElement}

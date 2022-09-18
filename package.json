@@ -50,5 +50,7 @@
       "npx eslint --fix"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "aws-sdk": "^2.1218.0"
+  }
 }

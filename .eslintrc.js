@@ -18,5 +18,7 @@ module.exports = {
 		'react/forbid-prop-types': 'off',
 		'react/jsx-props-no-spreading': 'off',
 		'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+		'react/prop-types': 'off',
+		'no-underscore-dangle': 'off',
 	},
 };

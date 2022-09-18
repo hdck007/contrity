@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github"
 
@@ -11,18 +12,20 @@ export const authOptions = {
     // ...add more providers here  
   ],
   callbacks: {
-    async jwt(token, user, account, profile, isNewUser) {
-      // Add access_token to the token right after signin
-      // if (account?.accessToken) {
-      //   token.accessToken = account.accessToken;
-      // }
-      console.log(user, account);
+    async jwt({token , account, profile}) {
+      if(profile){
+        token.username = profile.login
+      }
+      if (account) {
+        token.accessToken = account.access_token
+      }
       return token;
     },
-    async session(session, token) {
-      console.log("session", session, token);
-      return session;
-    },
+    async session({ session, token, user }) {
+      session.accessToken = token.accessToken;
+      session.username = token.username;
+      return session
+    }
   }
 }
 

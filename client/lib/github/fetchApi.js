@@ -1,10 +1,10 @@
 // const token = "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";
 
-const fetchApi = async (url) => {
+const fetchApi = async (url, token) => {
  const res = await fetch(url, {
   method: "GET",
   headers: {
-    "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GITHUB_PAT}`,
+    "Authorization": `Bearer ${token}`,
     "Accept": "application/vnd.github+json"
   }
 }).then(res  => res.json());

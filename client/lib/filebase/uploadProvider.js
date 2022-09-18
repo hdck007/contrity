@@ -21,7 +21,7 @@ export const listBuckets = () => {
 
 const uploadProvider = (fileBlob, filepath, filemimetype) => {
 	const params = {
-		Bucket: 'github-pr-nft-marketplace',
+		Bucket: 'damn',
 		Key: filepath,
 		ContentType: filemimetype,
 		Body: fileBlob,

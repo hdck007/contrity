@@ -50,7 +50,7 @@ function PRs({ username, prs, repo }) {
 			<p className='my-20 text-4xl font-semibold'>{repo} PRs</p>
 			{prs.map((pr) => (
 				<Link href={`/users/${username}/${repo}/${pr.number}`}>
-					<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
+					<div className='my-3 card border-2 flex flex-row justify-between items-center lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
 						<div className='flex card-body flex-row'>
 							<h2 className='card-title'>{pr.title}</h2>
 							{pr.state === 'open' ? (

@@ -101,10 +101,12 @@ function CanvasWrapper({
 	const { width } = widthObj[config.size];
 	const { height } = widthObj[config.size];
 
+	console.log(githubDetails);
+
 	const image = new window.Image();
 	const ownerImage = new window.Image();
 	if (githubDetails) {
-		image.src = githubDetails.head.user.avatar_url;
+		image.src = githubDetails.user.avatar_url;
 		image.width = height * 0.2;
 		image.height = height * 0.2;
 		ownerImage.src = githubDetails.base.repo.owner.avatar_url;

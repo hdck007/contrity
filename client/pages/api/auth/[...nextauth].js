@@ -6,12 +6,12 @@ export const authOptions = {
   // Configure one or more authentication providers  
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
+      clientId: process.env.NEXT_PUBLIC_GITHUB_ID,
+      clientSecret: process.env.NEXT_PUBLIC_GITHUB_SECRET,
     }),
     // ...add more providers here  
   ],
-  secret: process.env.SECRET,
+  secret: process.env.NEXT_PUBLIC_SECRET,
   callbacks: {
     async jwt({token , account, profile}) {
       if(profile){

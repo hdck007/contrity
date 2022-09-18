@@ -77,7 +77,7 @@ function CanvasWrapper({
 			body: formData,
 			headers: {
 				Authorization:
-					`Bearer ${process.env.NFT_STORAGE_KEY}`,
+					`Bearer ${process.env.NEXT_PUBLIC_NFT_STORAGE_KEY}`,
 			},
 		}).then((data) => data.json());
 		try {

@@ -4,7 +4,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
 const { chains, provider, webSocketProvider } = configureChains(
-	[chain.hardhat, chain.localhost, chain.polygonMumbai],
+	[chain.polygonMumbai],
 	[
 		jsonRpcProvider({
 			rpc: () => ({

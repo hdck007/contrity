@@ -9,18 +9,16 @@ export default function Login() {
         <div className="card-body">
           <h1 className="text-center text-2xl bold my-6" >Login with github</h1>
           {(session) ? (
-            <>
-              <button
+            <button
+                type="button"
                 className="btn btn-primary"
                 onClick={() => signOut()}>Sign out</button>
-            </>
           )
             : (
-              <>
-                <button
+              <button
+                  type="button"
                   className="btn btn-primary"
                 onClick={() => signIn()}>Sign in</button>
-              </>
             )}
         </div>
       </div>

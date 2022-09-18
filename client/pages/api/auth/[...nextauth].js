@@ -11,6 +11,7 @@ export const authOptions = {
     }),
     // ...add more providers here  
   ],
+  secret: process.env.SECRET,
   callbacks: {
     async jwt({token , account, profile}) {
       if(profile){

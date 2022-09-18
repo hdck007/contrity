@@ -46,5 +46,8 @@
       "npx prettier --write",
       "npx eslint --fix"
     ]
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1218.0"
   }
 }

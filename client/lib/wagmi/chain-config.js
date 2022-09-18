@@ -4,11 +4,11 @@ import { publicProvider } from 'wagmi/providers/public';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 
 const { chains, provider, webSocketProvider } = configureChains(
-	[chain.hardhat, chain.localhost],
+	[chain.hardhat, chain.localhost, chain.polygonMumbai],
 	[
 		jsonRpcProvider({
 			rpc: () => ({
-				http: `http://127.0.0.1:8545/`,
+				http: "https://rpc-mumbai.maticvigil.com",
 			}),
 		}),
 		publicProvider(),

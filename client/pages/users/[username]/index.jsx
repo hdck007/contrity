@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react'
 import fetchApi from '../../../lib/github/fetchApi';
 
 const UserInfo = ({ username, pulls }) => {
-  
+  console.log(pulls.items)
   return (
     <>
     <main className='mx-20 my-4'>

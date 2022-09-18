@@ -26,7 +26,7 @@ function Repos({ username, repos }) {
 	return (
 		<main className='mx-20 my-4'>
 			<div className='flex flex-row justify-between'>
-				<p className='my-20 text-4xl font-semibold'>{username}'s Repos</p>
+				<p className='my-20 text-4xl font-semibold'>{`${username}'s`} Repos</p>
 				<span className='flex items-center'>
 					<button
 						onClick={() => signOut()}

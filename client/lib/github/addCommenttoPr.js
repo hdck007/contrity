@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const addCommentProvider = async (url, token, message) => {
  const res = await fetch(url, {
   method: "POST",
@@ -9,7 +10,7 @@ const addCommentProvider = async (url, token, message) => {
    "body" : message
   }
  })
- .then(res => res.json())
+ .then(response => response.json())
  .catch(err => console.error(err.message));
  return res;
 }

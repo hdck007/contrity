@@ -1,7 +1,11 @@
+/* eslint-disable no-plusplus */
 import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Text, Image } from 'react-konva';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import Reponame from './reponame';
 import SHAText from './shatext';
+import addCommentProvider from '../../lib/github/addCommenttoPr';
 
 const widthObj = Object.freeze({
 	dp: {
@@ -27,6 +31,12 @@ function CanvasWrapper({
 	repo,
 	prNumber,
 }) {
+	const [processing, setProcessing] = useState(false);
+	const { data: session } = useSession();
+	const router = useRouter();
+	if (!session?.user) {
+		router.push('/');
+	}
 	const [githubDetails, setGithubDetails] = useState(null);
 	const stageRef = useRef(null);
 	const [config] = useState({
@@ -58,6 +68,7 @@ function CanvasWrapper({
 	}
 
 	const handleExport = async () => {
+		setProcessing(true);
 		const blob = dataURLtoBlob(stageRef.current.content.firstChild.toDataURL());
 		const formData = new FormData();
 		formData.append('file', blob);
@@ -66,12 +77,25 @@ function CanvasWrapper({
 			body: formData,
 			headers: {
 				Authorization:
-					'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDNGMDRBMDUyZjcyMzhDRjkzNkIwYTY4ZkUyZDYwZTZFNGNhRDdENUUiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzOTQwOTMwOTAwOSwibmFtZSI6Im15bmFtZSJ9.QWRhy2ePwIkyDPyFBKhFAmFgAQJ4HmHCVbiUu9Q-sHc',
+					`Bearer ${process.env.NFT_STORAGE_KEY}`,
 			},
 		}).then((data) => data.json());
-		write({
-      recklesslySetUnpreparedArgs: [`https://${response.value.cid}.ipfs.nftstorage.link/blob`, pr],
-    });
+		try {
+			await addCommentProvider(
+				`https://api.github.com/repos/${username}/${repo}/issues/${prNumber}/comments`,
+				session?.accessToken,
+				`Hey @${githubDetails.head.user.login} a special gift for you here: ${window.location.origin}}`
+			);
+			write({
+				recklesslySetUnpreparedArgs: [
+					`https://${response.value.cid}.ipfs.nftstorage.link/blob`,
+					pr,
+				],
+			});
+		} catch (err) {
+			// eslint-disable-next-line no-console
+			console.error(err);
+		}
 	};
 
 	const { width } = widthObj[config.size];
@@ -96,6 +120,7 @@ function CanvasWrapper({
 	const handleMint = async () => {
 		await handleExport();
 		setIsOpen(false);
+		setProcessing(false);
 	};
 
 	return (
@@ -143,6 +168,7 @@ function CanvasWrapper({
 				</Layer>
 			</Stage>
 			<div>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<button
 					className='btn btn-primary mx-5 hover:bg-purple-400'
 					type='button'
@@ -151,9 +177,7 @@ function CanvasWrapper({
 				>
 					Mint
 				</button>
-				<br />
-				<br />
-				<br />
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<button
 					className='btn btn-ghost mx-5'
 					type='button'
@@ -162,6 +186,19 @@ function CanvasWrapper({
 				>
 					Close
 				</button>
+				{processing && (
+					<p
+						style={{
+							width: '200px',
+							paddingLeft: '20px',
+							marginTop: '20px',
+						}}
+						className='text-black left-0 p-2 text-xl bold'
+					>
+						Please wait while we process your request. This may take a
+						while......
+					</p>
+				)}
 			</div>
 		</>
 	);

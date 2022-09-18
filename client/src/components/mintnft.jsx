@@ -1,4 +1,4 @@
-import { usePrepareContractWrite, useContractWrite, useAccount } from 'wagmi';
+import { useContractWrite, useAccount } from 'wagmi';
 import Modal from 'react-modal';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';

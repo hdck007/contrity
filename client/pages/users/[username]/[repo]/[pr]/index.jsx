@@ -82,11 +82,17 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 			</span>
 			<span className='flex justify-between items-center'>
 				<p className='my-20 text-4xl font-semibold'>
-					{prInfo.title}
+					<a
+						target='_blank'
+						className='hover:underline hover:text-blue-400'
+						href={prInfo.html_url} rel="noreferrer"
+					>
+						{prInfo.title}
+					</a>
 					<span className='mx-10 font-light underline'>#{prNo}</span>
 				</p>
 				<div className='w-100 flex justify-end'>
-					{isOwner && tokenId!==null && !tokenId && (
+					{isOwner && tokenId !== null && !tokenId && (
 						<MintNFT
 							username={username}
 							repo={repo}

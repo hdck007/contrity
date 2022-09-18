@@ -7,7 +7,7 @@ const fetchApi = async (url, token) => {
     "Authorization": `Bearer ${token}`,
     "Accept": "application/vnd.github+json"
   }
-}).then(res  => res.json());
+}).then(response  => response.json());
 return res;
 }
 

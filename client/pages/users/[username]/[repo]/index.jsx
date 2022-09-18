@@ -45,7 +45,7 @@ function PRs({ username, prs, repo }) {
 						d='M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18'
 					/>
 				</svg>
-				<p className='text-white' >Back</p>
+				<p className='text-white'>Back</p>
 			</span>
 			<p className='my-20 text-4xl font-semibold'>{username}'s PRs</p>
 			{prs.map((pr) => (

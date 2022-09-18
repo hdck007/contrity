@@ -1,6 +1,6 @@
-import fetchApi from "../../../lib/github/fetchApi"
+import fetchApi from "../../../../../lib/github/fetchApi"
 
-const Repo = ({pr}) => {
+const Repo = ({username, repo, pr_no, pr_info}) => {
   return (
    <>
    <main className='mx-20 my-4'>
@@ -9,7 +9,13 @@ const Repo = ({pr}) => {
      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
    </svg><p>Back</p>
    </span>
-     <p className='my-20 text-4xl font-semibold'>{pr}'s PRs</p>
+   <span className="flex justify-between items-center">
+     <p className='my-20 text-4xl font-semibold'>{pr_info.title}<span className="mx-10 font-light underline">#{pr_no}</span></p>
+     <div className="w-100 flex justify-end">
+      <button className="btn btn-ghost mx-5 hover:bg-purple-400">Claim NFT</button>
+      <button className="btn btn-ghost mx-5 hover:bg-purple-400">Mint NFT</button>
+     </div>
+   </span>
 
      {/* {prs.map(pr => (
          <div 
@@ -26,6 +32,10 @@ const Repo = ({pr}) => {
              {ArrowElement}
          </div>
      ))} */}
+
+     <p className="py-5 text-4xl font-semibold">We from Contrity, Appreciates you for Contribution at Repository {pr_info.head.repo.full_name}.</p>
+     <p className="py-5 text-4xl font-semibold">And, For your these helpful contributions towards Open-source Community, We have made a Customised NFT relating your Pull Request.</p>
+     
    </main>
    </>
   )
@@ -37,23 +47,17 @@ const ArrowElement = (<div className="px-3 h-100 flex card-actions items-center 
 </svg>
 </div>);
 
-// export const getStaticPaths = () => {
-//  return{
-//   paths: [{params: {repo : "cords"}}],
-//   fallback: false
-//  }
-// }
-
 export const getServerSideProps = async (context) => {
- const pr = context.params.pr
- console.log(pr)
-//  const username = context.params.username
-//  const prs = await fetchApi(`https://api.github.com/${username}/${repo}/pulls?state=all`);
+ const pr_no = context.params.pr
+ const repo = context.params.repo
+ const username = context.params.username
+ const pr_info = await fetchApi(`https://api.github.com/repos/${username}/${repo}/pulls/${pr_no}`);
  return {
   props : {
-  //  username,
-  //  repo,
-   pr: "Hello",
+   username,
+   repo,
+   pr_no,
+   pr_info
   },
  }
 }

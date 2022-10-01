@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { getSession } from 'next-auth/react';
+import Head from 'next/head';
 import fetchApi from '../../../lib/github/fetchApi';
 import BackButton from '../../../src/components/backbutton';
 
@@ -24,31 +25,38 @@ const ArrowElement = (
 
 function PRs({ username, prs }) {
 	return (
-		<main className='mx-20 my-4'>
-			<BackButton />
-			<p className='my-20 text-4xl text-primary-content font-semibold'>{username}'s PRs</p>
-			{prs.map((pr) => (
-				<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
-					<div className='flex card-body flex-row'>
-						<h2 className='card-title'>{pr.title}</h2>
-						{pr.state === 'open' ? (
-							<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-								{pr.state}
-							</div>
-						) : pr.merged_at ? (
-							<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-								merged
-							</div>
-						) : (
-							<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
-								{pr.state}
-							</div>
-						)}
+		<>
+			<Head>
+				<title>{username}'s PRs</title>
+			</Head>
+			<main className='mx-20 my-4'>
+				<BackButton />
+				<p className='my-20 text-4xl text-primary-content font-semibold'>
+					{username}'s PRs
+				</p>
+				{prs.map((pr) => (
+					<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
+						<div className='flex card-body flex-row'>
+							<h2 className='card-title'>{pr.title}</h2>
+							{pr.state === 'open' ? (
+								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+									{pr.state}
+								</div>
+							) : pr.merged_at ? (
+								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+									merged
+								</div>
+							) : (
+								<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
+									{pr.state}
+								</div>
+							)}
+						</div>
+						{ArrowElement}
 					</div>
-					{ArrowElement}
-				</div>
-			))}
-		</main>
+				))}
+			</main>
+		</>
 	);
 }
 

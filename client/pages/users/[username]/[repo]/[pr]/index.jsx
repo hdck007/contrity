@@ -2,10 +2,10 @@ import { getSession } from 'next-auth/react';
 import { useContractRead } from 'wagmi';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
 import fetchApi from '../../../../../lib/github/fetchApi';
 import Profile from '../../../../../src/components/contract';
 import { abi, contractaddress } from '../../../../../src/constants';
+import BackButton from '../../../../../src/components/backbutton';
 
 const MintNFT = dynamic(() => import('../../../../../src/components/mintnft'), {
 	ssr: false,
@@ -34,11 +34,14 @@ function NftImage({ tokenId }) {
 		});
 	}, []);
 
-	return imageUrl ? <img alt='the nft' src={imageUrl} /> : <h3 className='text-xl'>The nft preview is loading here......</h3>;
+	if (imageUrl) {
+		return <img src={imageUrl} alt='NFT' />;
+	}
+
+	return <h3 className='text-xl'>The nft preview is loading here......</h3>;
 }
 
 function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
-	const router = useRouter();
 	const [tokenId, setTokenId] = useState(null);
 	const { refetch } = useContractRead({
 		args: [String(prInfo.id)],
@@ -60,32 +63,14 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 			<div className='absolute right-10 bottom-10'>
 				<Profile />
 			</div>
-			<span
-				onClick={() => router.back()}
-				className='w-fit p-3 flex gap-2 cursor-pointer rounded-xl hover:bg-purple-400'
-			>
-				<svg
-					xmlns='http://www.w3.org/2000/svg'
-					fill='none'
-					viewBox='0 0 24 24'
-					strokeWidth='1.5'
-					stroke='currentColor'
-					className='w-6 h-6 text-white'
-				>
-					<path
-						strokeLinecap='round'
-						strokeLinejoin='round'
-						d='M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18'
-					/>
-				</svg>
-				<p className='text-white'>Back</p>
-			</span>
+			<BackButton />
 			<span className='flex justify-between items-center'>
-				<p className='my-20 text-4xl font-semibold'>
+				<p className='my-20 text-4xl text-primary-content font-semibold'>
 					<a
 						target='_blank'
 						className='hover:underline hover:text-blue-400'
-						href={prInfo.html_url} rel="noreferrer"
+						href={prInfo.html_url}
+						rel='noreferrer'
 					>
 						{prInfo.title}
 					</a>
@@ -103,15 +88,25 @@ function PR({ username, repo, prNo, prInfo, isOwner, shouldClaim }) {
 					{shouldClaim && !!tokenId && <ClaimNFT tokenId={tokenId} />}
 				</div>
 			</span>
-			<p className='py-5 text-4xl font-semibold'>
-				We appreciate you for contribution at repository{' '}
-				{prInfo.head.repo.full_name}.
-			</p>
-			<p className='py-5 text-4xl font-semibold'>
-				And, for your helpful contributions towards the community, We have made
-				a customised NFT relating your pull request below. if you are the
-				contributor you can claim it.
-			</p>
+			{shouldClaim && (
+				<p className='text-xl'>
+					We appreciate you for contribution at repository{' '}
+					<span className='text-secondary'>{prInfo.head.repo.full_name}</span>.
+				</p>
+			)}
+			{shouldClaim && !!tokenId && (
+				<p className='text-xl'>
+					And, for your helpful contributions towards the community, We have
+					made a customised NFT relating your pull request below. if you are the
+					contributor you can claim it.
+				</p>
+			)}
+			{!!tokenId && !shouldClaim && (
+				<p className='text-xl'>
+					We have made a customised NFT relating your pull request below. if you
+					are the contributor you can claim it.
+				</p>
+			)}
 			{!!tokenId && <NftImage tokenId={tokenId} />}
 		</main>
 	);

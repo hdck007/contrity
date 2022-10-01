@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import fetchApi from '../../../../lib/github/fetchApi';
+import BackButton from '../../../../src/components/backbutton';
 
 const ArrowElement = (
 	<div className='px-3 h-100 flex card-actions items-center justify-center transition duration-150 ease-out hover:ease-in'>
@@ -24,30 +24,11 @@ const ArrowElement = (
 );
 
 function PRs({ username, prs, repo }) {
-	const router = useRouter();
 	return (
 		<main className='mx-20 my-4'>
-			<span
-				onClick={() => router.back()}
-				className='w-fit p-3 flex gap-2 cursor-pointer rounded-xl hover:bg-purple-400'
-			>
-				<svg
-					xmlns='http://www.w3.org/2000/svg'
-					fill='none'
-					viewBox='0 0 24 24'
-					strokeWidth='1.5'
-					stroke='currentColor'
-					className='w-6 h-6 text-white'
-				>
-					<path
-						strokeLinecap='round'
-						strokeLinejoin='round'
-						d='M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18'
-					/>
-				</svg>
-				<p className='text-white'>Back</p>
-			</span>
-			<p className='my-20 text-4xl font-semibold'>{repo} PRs</p>
+			<BackButton />
+			<p className='my-20 text-4xl text-primary-content font-semibold'>{repo} PRs</p>
+			{!prs.length && (<p className="text-secondary-content" >Ohh! its so empty here :(</p>)}
 			{prs.map((pr) => (
 				<Link href={`/users/${username}/${repo}/${pr.number}`}>
 					<div className='my-3 card border-2 flex flex-row justify-between items-center lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>

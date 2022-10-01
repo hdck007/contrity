@@ -26,13 +26,13 @@ function Repos({ username, repos, currentuser }) {
 	return (
 		<main className='mx-20 my-4'>
 			<div className='flex flex-row justify-between'>
-				<p className='my-20 text-4xl font-semibold'>{`${username}'s`} Repos</p>
+				<p className='my-20 text-4xl text-primary-content font-semibold'>{`${username}'s`} Repos</p>
 				<span className='flex items-center'>
 					{currentuser === username && (
 						<Link href={`/users/${username}/recent`}>
 							<a
 								href={`/users/${username}/recent`}
-								className='hover:bg-purple-400 btn btn-ghost h-100'
+								className='hover:bg-purple-400 hover:text-white btn btn-ghost h-100'
 							>
 								My prs
 							</a>
@@ -41,7 +41,7 @@ function Repos({ username, repos, currentuser }) {
 					<button
 						onClick={() => signOut()}
 						type='button'
-						className='hover:bg-purple-400 btn btn-ghost h-100'
+						className='hover:bg-purple-400 hover:text-white btn btn-ghost h-100'
 					>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'

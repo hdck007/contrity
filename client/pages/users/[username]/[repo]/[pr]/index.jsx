@@ -114,8 +114,7 @@ function PR({
 				{shouldClaim && !!tokenId && (
 					<p className='text-xl'>
 						And, for your helpful contributions towards the community, We have
-						made a customised NFT relating your pull request below. if you are
-						the contributor you can claim it.
+						made a customised NFT relating your pull request below.
 					</p>
 				)}
 				{!!tokenId && !shouldClaim && (

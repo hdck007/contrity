@@ -2,12 +2,12 @@ import { getSession } from 'next-auth/react';
 import { useContractRead } from 'wagmi';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import snarkdown from 'snarkdown';
+import Head from 'next/head';
 import fetchApi from '../../../../../lib/github/fetchApi';
 import Profile from '../../../../../src/components/contract';
 import { abi, contractaddress } from '../../../../../src/constants';
 import BackButton from '../../../../../src/components/backbutton';
-import snarkdown from 'snarkdown';
-import Head from 'next/head';
 
 const MintNFT = dynamic(() => import('../../../../../src/components/mintnft'), {
 	ssr: false,
@@ -75,13 +75,13 @@ function PR({
 					{repo}-{prInfo.title}
 				</title>
 			</Head>
-			<main className='mx-20 my-4'>
+			<main className='prose prose-2xl mx-auto py-5'>
 				<div className='absolute right-10 bottom-10'>
 					<Profile />
 				</div>
 				<BackButton />
 				<span className='flex justify-between items-center'>
-					<p className='my-20 text-4xl text-primary-content font-semibold'>
+					<h2 className='my-10'>
 						<a
 							target='_blank'
 							className='hover:underline hover:text-blue-400'
@@ -91,7 +91,7 @@ function PR({
 							{prInfo.title}
 						</a>
 						<span className='mx-10 font-light underline'>#{prNo}</span>
-					</p>
+					</h2>
 					<div className='w-100 flex justify-end'>
 						{isOwner && tokenId !== null && !tokenId && (
 							<MintNFT

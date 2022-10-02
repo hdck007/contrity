@@ -32,13 +32,13 @@ function PRs({ username, prs, repo }) {
 					{username}/{repo} PRs
 				</title>
 			</Head>
-			<main className='mx-20 my-4'>
+			<main className='prose prose-2xl mx-auto py-5'>
 				<BackButton />
-				<p className='my-20 text-4xl text-primary-content font-semibold'>
+				<h1 className='my-10'>
 					{repo} PRs
-				</p>
+				</h1>
 				{!prs.length && (
-					<p className='text-secondary-content'>Ohh! its so empty here :(</p>
+					<p>Ohh! its so empty here :(</p>
 				)}
 				{prs.map((pr) => (
 					<Link href={`/users/${username}/${repo}/${pr.number}`}>

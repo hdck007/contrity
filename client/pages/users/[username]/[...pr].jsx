@@ -29,11 +29,9 @@ function PRs({ username, prs }) {
 			<Head>
 				<title>{username}'s PRs</title>
 			</Head>
-			<main className='mx-20 my-4'>
+			<main className='mx-auto prose prose-2xl'>
 				<BackButton />
-				<p className='my-20 text-4xl text-primary-content font-semibold'>
-					{username}'s PRs
-				</p>
+				<h1 className='my-10'>{username}'s PRs</h1>
 				{prs.map((pr) => (
 					<div className='my-3 card border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
 						<div className='flex card-body flex-row'>

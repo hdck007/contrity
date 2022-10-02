@@ -30,9 +30,9 @@ function PRs({ username, prs }) {
 			<Head>
 				<title>{username}'s PRs</title>
 			</Head>
-			<main className='mx-20 my-4'>
+			<main className='my-4 prose prose-2xl mx-auto'>
 				<BackButton />
-				<p className='my-20 text-4xl text-primary-content font-semibold'>{username}'s PRs</p>
+				<h1 className='my-10' >{username}'s PRs</h1>
 				{prs.map((pr) => (
 					<>
 						<Link
@@ -43,15 +43,16 @@ function PRs({ username, prs }) {
 							}/${pr.number}`}
 						>
 							<a
+								className='w-full'
 								href={`/users/${username}/${
 									pr.repository_url.split('/')[
 										pr.repository_url.split('/').length - 1
 									]
 								}/${pr.number}`}
 							>
-								<div className='my-3 card flex flex-row justify-center items-center shadow-xl border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
-									<div className='flex card-body flex-row'>
-										<h2 className='card-title'>{pr.title}</h2>
+								<div className=' w-full my-3 card flex flex-row justify-center items-center shadow-xl border-2 lg:card-side bg-base-100 cursor-pointer hover:bg-purple-400 hover:text-white'>
+									<div className='flex card-body flex-row items-center'>
+										<p className='card-title'>{pr.title}</p>
 										{pr.state === 'open' ? (
 											<div className='m-3 p-4 h-100 flex align-center badge badge-outline text-md font-semibold '>
 												{pr.state}

@@ -29,11 +29,11 @@ function Repos({ username, repos, currentuser }) {
 			<Head>
 				<title>{username}'s Repos</title>
 			</Head>
-			<main className='mx-20 my-4'>
+			<main className='prose prose-2xl mx-auto'>
 				<div className='flex flex-row justify-between'>
-					<p className='my-20 text-4xl text-primary-content font-semibold'>
+					<h1 className='my-10'>
 						{`${username}'s`} Repos
-					</p>
+					</h1>
 					<span className='flex items-center'>
 						{currentuser === username && (
 							<Link href={`/users/${username}/recent`}>
@@ -72,9 +72,9 @@ function Repos({ username, repos, currentuser }) {
 				{repos.map((repo) => (
 					<>
 						<Link href={`/users/${username}/${repo.name}`} type='button'>
-							<div className='my-3 card shadow-2xl border-2 lg:card-side bg-base-100 w-full cursor-pointer hover:bg-purple-400 hover:text-white'>
+							<div className='card shadow-2xl border-2 lg:card-side bg-base-100 w-full cursor-pointer hover:bg-purple-400 hover:text-white'>
 								<div className='card-body flex flex-row justify-between items-center'>
-									<h2 className='card-title'>{repo.name}</h2>
+									<p className='card-title'>{repo.name}</p>
 									{ArrowElement}
 								</div>
 							</div>
